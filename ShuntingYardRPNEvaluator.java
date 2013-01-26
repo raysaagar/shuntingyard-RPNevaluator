@@ -97,17 +97,21 @@ public class ShuntingYardRPNEvaluator {
 			// determine which one, and evaluate appropriately then push result back onto stack
 			if(operators.containsKey(token)){
 				double value = 0;
+				// addition
 				if(token.equals("+")){
 					value = stack.pop() + stack.pop();
 				}
+				// multiplication
 				else if (token.equals("*")){
 					value = stack.pop() * stack.pop();
 				}
+				// subtraction
 				else if (token.equals("-")){
 					Double b = stack.pop();
 					Double a = stack.pop();
 					value = a - b;
 				}
+				// division
 				else if (token.equals("/")){
 					Double b = stack.pop();
 					Double a = stack.pop();
@@ -115,6 +119,7 @@ public class ShuntingYardRPNEvaluator {
 						throw new IllegalArgumentException("Divide by 0 error!");
 					value = a / b;
 				}
+				// power
 				else if (token.equals("^")){
 					Double b = stack.pop();
 					Double a = stack.pop();
@@ -136,31 +141,99 @@ public class ShuntingYardRPNEvaluator {
 		return stack.pop();
 	}
 	
+	private static void examples(){
+		String equation = "( 1 + 2 ) * ( 3 / 4 ) ^ ( 5 + 6 )";
+		String[] input = equation.split(" "); // use space as delimiter.
+
+		System.out.println(equation);
+		System.out.println(evaluateRPN(convertInfixToRPN(input)));
+		
+		System.out.println();
+		equation = "1 + 2 * 3 / 4 ^ 5 + 6";
+		input = equation.split(" ");
+		
+		System.out.println(equation);
+		System.out.println(evaluateRPN(convertInfixToRPN(input)));
+	}
+	
+	private static class Equation{
+		String equation;
+		Double solution;
+		
+		public Equation(String e, Double s){
+			this.equation = e;
+			this.solution = s;
+		}
+		
+		public String getEquation(){return equation;}
+		public Double getSolution(){return solution;}
+		
+	}
+	
+	/*
+	 * Simple testing function to run test cases.
+	 */
+	private static void tests(){
+		System.out.println("Running test equations!");
+		
+		ArrayList<Equation> equations = new ArrayList<Equation>();
+		
+		equations.add(new Equation("1 + 2",3.0));
+		equations.add(new Equation("1 - 2",-1.0));
+		equations.add(new Equation("2 - 1",1.0));
+		equations.add(new Equation("4 * 3",12.0));
+		equations.add(new Equation("3 * 4",12.0));
+		equations.add(new Equation("10 / 5",2.0));
+		equations.add(new Equation("5 / 10",0.5));
+		equations.add(new Equation("2 ^ 5",32.0));
+		equations.add(new Equation("2 ^ ( 5 - 3 )",4.0));
+		equations.add(new Equation("2 ^ 5 - 3",29.0));
+		equations.add(new Equation("4 - 2 ^ 3",-4.0));
+		equations.add(new Equation("( 4 - 2 ) ^ 3",8.0));
+		
+		int numTests = 0; 
+		int passedTests = 0;
+		
+		// run each equation through evaluator!
+		for(Equation equation: equations){
+			numTests++;
+			
+			String[] input = equation.getEquation().split(" "); 
+
+			System.out.print(equation.getEquation() + " == " + equation.getSolution());
+			
+			Double shuntingValue = evaluateRPN(convertInfixToRPN(input));
+			if(shuntingValue.compareTo(equation.getSolution())== 0){
+				System.out.println(" \tPASSED! (Calculated: "+shuntingValue+")");
+				passedTests++;
+			}
+			else{
+				System.out.println(" \tFAILED! (Calculated: "+shuntingValue+")");
+			}
+	
+		}
+		System.out.printf("Passed %d/%d tests.\n",passedTests,numTests);
+	}
+	
 	public static void main(String[] args) {
 		initializeOperators();
+		
+		//tests();
 		Scanner scan = new Scanner(System.in);
 		String userInput = scan.nextLine();
+		
 		if(userInput.equals("help") || userInput.equals("-h")){
 			System.out.println("Type in an expression to evaluate. Supported operators are +, -, *, /, and *. Use spaces between each character.");
 			System.out.println("Type examples to see sample input and output.");
 		}
 		else if (userInput.equals("examples")){
-			String equation = "( 1 + 2 ) * ( 3 / 4 ) ^ ( 5 + 6 )";
-			String[] input = equation.split(" "); // use space as delimiter.
-
-			System.out.println(equation);
-			System.out.println(evaluateRPN(convertInfixToRPN(input)));
-			
-			System.out.println();
-			equation = "1 + 2 * 3 / 4 ^ 5 + 6";
-			input = equation.split(" ");
-			
-			System.out.println(equation);
+			examples();
+		}
+		else{
+			//String equation = scan.nextLine();
+			String equation = userInput;
+			String[] input = equation.split(" ");
 			System.out.println(evaluateRPN(convertInfixToRPN(input)));
 		}
-		
-		String equation = scan.nextLine();
-		String[] input = equation.split(" ");
-		System.out.println(evaluateRPN(convertInfixToRPN(input)));
 	}
 }
