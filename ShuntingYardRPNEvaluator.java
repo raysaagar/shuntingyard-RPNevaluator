@@ -10,7 +10,7 @@ public class ShuntingYardRPNEvaluator {
 	private static final int leftassociative = 0;
 	private static final int rightassociative = 1;
 	
-	// precedence levels, based on wikipedia page
+	// precedence levels, based on Wikipedia page
 	private static final int level1 = 2;
 	private static final int level2 = 3;
 	private static final int level3 = 4;
@@ -39,7 +39,7 @@ public class ShuntingYardRPNEvaluator {
 		ArrayList<String> rpn = new ArrayList<String>();
 		Stack<String> operatorStack = new Stack<String>();
 		
-		// Shunting Yard algorithm as follows from wikipedia
+		// Shunting Yard algorithm as follows from Wikipedia
 		
 		// process all input 
 		for(String token : tokens){
@@ -48,9 +48,6 @@ public class ShuntingYardRPNEvaluator {
 			if(operators.containsKey(token)){
 				// need to check if top of stack is operator or if its a paren
 				while(!operatorStack.empty() && operators.containsKey(operatorStack.peek())){
-//					System.out.println("hit");
-//					System.out.println(operators.get(token)[1]+ " " + (operators.get(token)[1] == leftassociative));
-//					System.out.println(compareTokens(token,operatorStack.peek()));
 					if(((operators.get(token)[1] == leftassociative) && compareTokens(token,operatorStack.peek()) <= 0) 
 							|| ((operators.get(token)[1] == rightassociative) && compareTokens(token,operatorStack.peek()) < 0)){
 						rpn.add(operatorStack.pop()); // pop off operator and push into output
@@ -76,9 +73,6 @@ public class ShuntingYardRPNEvaluator {
 			else{
 				rpn.add(token);
 			}
-//			System.out.println(token);
-//			System.out.println(rpn.toString());
-//			System.out.println(operatorStack.toString());
 		}
 		
 		// finally push what remains in stack to output
@@ -190,6 +184,9 @@ public class ShuntingYardRPNEvaluator {
 		equations.add(new Equation("2 ^ 5 - 3",29.0));
 		equations.add(new Equation("4 - 2 ^ 3",-4.0));
 		equations.add(new Equation("( 4 - 2 ) ^ 3",8.0));
+		equations.add(new Equation("( 6 + 2 ) ^ ( 2 - 3 )",0.125));
+		equations.add(new Equation("6 + 2 ^ 2 - 3 * 5 / 5",7.0));
+		equations.add(new Equation("( 6 + 2 ) ^ ( ( 2 - 3 ) * 5 / 5 )",0.125));
 		
 		int numTests = 0; 
 		int passedTests = 0;
@@ -217,17 +214,20 @@ public class ShuntingYardRPNEvaluator {
 	
 	public static void main(String[] args) {
 		initializeOperators();
-		
-		//tests();
+
 		Scanner scan = new Scanner(System.in);
 		String userInput = scan.nextLine();
 		
 		if(userInput.equals("help") || userInput.equals("-h")){
 			System.out.println("Type in an expression to evaluate. Supported operators are +, -, *, /, and *. Use spaces between each character.");
 			System.out.println("Type examples to see sample input and output.");
+			System.out.println("Type tests to see results of various inputs.");
 		}
 		else if (userInput.equals("examples")){
 			examples();
+		}
+		else if (userInput.equals("tests")){
+			tests();
 		}
 		else{
 			//String equation = scan.nextLine();
