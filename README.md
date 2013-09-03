@@ -7,7 +7,7 @@ Based on:
 
 [Shunting Yard Algorithm](http://en.wikipedia.org/wiki/Shunting-yard_algorithm)
 
-[Postfix Algorithm](http://en.wikipedia.org/wiki/Reverse_Polish_notation#Postfix_algorithm)
+[Postfix Algorithm (Reverse Polish Notation)](http://en.wikipedia.org/wiki/Reverse_Polish_notation#Postfix_algorithm)
 
 To run:
 
